@@ -1,6 +1,7 @@
 import taro from "@tarojs/taro"
 import {Button, View, Text} from "@tarojs/components"
 import {useState} from "react"
+import Taro from "@tarojs/taro";
 
 const Index = () => {
   const [conter, setConter] = useState(0)
@@ -18,7 +19,12 @@ const Index = () => {
     })
   }
   const getProfile = () => {
-    
+    Taro.getUserProfile({
+      desc: '用于完善会员资料',
+      success: (res) => {
+        console.log(res)
+      }
+    })
   }
   return (
     <View className="index px-2">
