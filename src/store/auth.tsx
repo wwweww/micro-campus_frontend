@@ -23,7 +23,7 @@ const {Provider} = AuthContext;
 const AuthProvider = ({children}: PropsWithChildren) => {
   const [authState, setAuthState] = useState<AuthStateType>({});
   const [openid, setOpenid] = useState<string>("");
-  const [userInfoData, setUserInfoData] = useState<string>("");
+  const [userInfoData, setUserInfoData] = useState({});
   useEffect(()=>{
     let openid = Taro.getStorageSync("openid")
     if (openid === "") {
@@ -36,20 +36,25 @@ const AuthProvider = ({children}: PropsWithChildren) => {
   }, [])
 
   useEffect(() => {
+    if (openid === "") {
+      return
+    }
     let a = authState
     a.openid = openid;
     setAuthState(a)
   }, [openid]);
 
   useEffect(() => {
+    if (userInfoData === "") {
+      return
+    }
     let a = authState
-    let jsonUserInfoData = JSON.parse(userInfoData)
-    let _data: UserInfoType = {
+    let jsonUserInfoData: any = userInfoData
+    a.userInfo = {
       avatarUrl: jsonUserInfoData.avatarUrl,
       nickName: jsonUserInfoData.nickName,
       gender: jsonUserInfoData.gender
-    }
-    a.userInfo = _data;
+    } as UserInfoType;
     setAuthState(a);
   }, [userInfoData]);
 
@@ -65,9 +70,9 @@ const AuthProvider = ({children}: PropsWithChildren) => {
     Taro.getUserProfile({
       desc: '用于完善会员资料',
       success: (res) => {
-        console.log(res.rawData)
-        Taro.setStorageSync("userInfo", JSON.stringify(res.rawData))
-        setUserInfoData(res.rawData)
+        console.log(res.userInfo)
+        Taro.setStorageSync("userInfo", res.userInfo)
+        setUserInfoData(res.userInfo)
       }
     })
     login();
