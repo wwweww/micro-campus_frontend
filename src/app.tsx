@@ -5,10 +5,12 @@ import counterStore from './store/counter'
 
 import './app.less'
 import RootLayout from "./components/layout/RootLayout";
+import AuthProvider from "./store/auth";
 
 const store = {
   counterStore
 }
+
 
 class App extends Component<PropsWithChildren> {
   componentDidMount () {}
@@ -20,11 +22,13 @@ class App extends Component<PropsWithChildren> {
   // this.props.children 就是要渲染的页面
   render () {
     return (
-      <RootLayout>
-        <Provider store={store}>
-          {this.props.children}
-        </Provider>
-      </RootLayout>
+      <AuthProvider>
+        <RootLayout>
+          <Provider store={store}>
+            {this.props.children}
+          </Provider>
+        </RootLayout>
+      </AuthProvider>
     )
   }
 }
